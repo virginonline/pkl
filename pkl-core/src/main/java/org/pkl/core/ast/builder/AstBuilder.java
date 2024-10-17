@@ -1516,7 +1516,7 @@ public final class AstBuilder extends AbstractAstBuilder<Object> {
       text = "-" + text;
     }
 
-    text = text.replaceAll("_", "");
+    text = text.replace("_", "");
     try {
       var num = Long.parseLong(text, radix);
       return new IntLiteralNode(section, num);
@@ -1550,7 +1550,7 @@ public final class AstBuilder extends AbstractAstBuilder<Object> {
           source.createSection(ctx.getStart().getStartIndex() + exponentIdx + 1, 1));
     }
 
-    text = text.replaceAll("_", "");
+    text = text.replace("_", "");
     try {
       var num = Double.parseDouble(text);
       return new FloatLiteralNode(section, num);
@@ -1869,12 +1869,12 @@ public final class AstBuilder extends AbstractAstBuilder<Object> {
 
   @Override
   public ExpressionNode visitUnaryMinusExpr(UnaryMinusExprContext ctx) {
-    var childExpr = visitExpr(ctx.expr());
-    if (childExpr instanceof IntLiteralNode || childExpr instanceof FloatLiteralNode) {
-      // negation already handled in child expr (see corresponding code)
+    var childCtx = ctx.expr();
+    var childExpr = visitExpr(childCtx);
+    if (childCtx instanceof IntLiteralContext || childCtx instanceof FloatLiteralContext) {
+      // negation already handled (see visitIntLiteral/visitFloatLiteral)
       return childExpr;
     }
-
     return UnaryMinusNodeGen.create(createSourceSection(ctx), childExpr);
   }
 
